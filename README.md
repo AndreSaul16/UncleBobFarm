@@ -17,7 +17,7 @@ Un sistema de gestión integral para granjas que permite administrar animales, u
 - Java 17
 - Spring Boot 3.x
 - Spring Data JPA
-- PostgreSQL
+- MySQL (Azure Database for MySQL)
 - Bootstrap 5
 - JavaScript
 
@@ -25,7 +25,7 @@ Un sistema de gestión integral para granjas que permite administrar animales, u
 
 - JDK 17 o superior
 - Maven 3.6 o superior
-- PostgreSQL 12 o superior
+- Conexión a Azure Database for MySQL
 
 ## Instalación
 
@@ -36,8 +36,15 @@ cd UncleBobFarm
 ```
 
 2. Configurar la base de datos:
-- Crear una base de datos PostgreSQL llamada `unclebobfarm`
-- Configurar las credenciales en `application.properties`
+- Asegúrate de tener acceso a la base de datos MySQL en Azure
+- Configurar las credenciales en `application.properties`:
+```properties
+spring.datasource.url=jdbc:mysql://tu-servidor.mysql.database.azure.com:3306/unclebobfarm
+spring.datasource.username=tu-usuario@tu-servidor
+spring.datasource.password=tu-contraseña
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect
+spring.jpa.hibernate.ddl-auto=update
+```
 
 3. Compilar el proyecto:
 ```bash
