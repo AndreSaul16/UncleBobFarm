@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  # MySQL Database Service
+  mysql:
+    image: mysql:8.0
+    container_name: unclebob-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: gestorgranja
+      MYSQL_USER: rancheroRoot
+      MYSQL_PASSWORD: "@admin123"
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./docker/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    networks:
+      - unclebob-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  
+  # Spring Boot Application Service
+  backend:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: unclebob-backend
+    restart: always
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/gestorgranja
+      SPRING_DATASOURCE_USERNAME: rancheroRoot
+      SPRING_DATASOURCE_PASSWORD: "@admin123"
+    ports:
+      - "8081:8081"
+    networks:
+      - unclebob-network
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8081/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+# Persistent volume for MySQL data
+volumes:
+  mysql-data:
+    driver: local
+
+# Network for communication between services
+networks:
+  unclebob-network:
+    driver: bridge
