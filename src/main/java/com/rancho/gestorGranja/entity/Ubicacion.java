@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
@@ -44,6 +45,7 @@ public class Ubicacion {
     private Set<Animal.EspeciePredefinida> especiesPermitidas;
 
     @OneToMany(mappedBy = "ubicacion")
+    @JsonManagedReference
     private List<Animal> animales;
 
     public enum TipoUbicacion {
