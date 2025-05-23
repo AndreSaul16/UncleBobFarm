@@ -1,0 +1,2455 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Granja - API Tester</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .endpoint-card {
+            margin-bottom: 1rem;
+        }
+        .response-area {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 0.25rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .nav-tabs {
+            margin-bottom: 1rem;
+        }
+        .table-responsive {
+            overflow-x: auto;
+        }
+        .badge {
+            padding: 0.5em 0.8em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <h1 class="mb-4">Gestor de Granja - API Tester</h1>
+        
+        <ul class="nav nav-tabs" id="apiTabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="ubicaciones-tab" data-bs-toggle="tab" href="#ubicaciones" role="tab">Ubicaciones</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="animales-tab" data-bs-toggle="tab" href="#animales" role="tab">Animales</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="empleados-tab" data-bs-toggle="tab" href="#empleados" role="tab">Empleados</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="actividades-tab" data-bs-toggle="tab" href="#actividades" role="tab">Actividades</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="inventario-tab" data-bs-toggle="tab" href="#inventario" role="tab">Inventario</a>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="apiTabContent">
+            <!-- Ubicaciones -->
+            <div class="tab-pane fade show active" id="ubicaciones" role="tabpanel">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card endpoint-card">
+                            <div class="card-header">
+                                Listar Ubicaciones
+                            </div>
+                            <div class="card-body">
+                                <button class="btn btn-primary" onclick="listarUbicaciones()">Obtener Ubicaciones</button>
+                                <div class="mt-3">
+                                    <h6>Filtros:</h6>
+                                    <input type="text" class="form-control mb-2" id="nombreUbicacion" placeholder="Nombre">
+                                    <select class="form-control mb-2" id="tipoUbicacion">
+                                        <option value="">Todos los tipos</option>
+                                        <option value="ESTABLO">Establo</option>
+                                        <option value="GALLINERO">Gallinero</option>
+                                        <option value="CORRAL">Corral</option>
+                                        <option value="EXTERIOR">Exterior</option>
+                                        <option value="ALMACEN">Almacén</option>
+                                    </select>
+                                    <button class="btn btn-secondary" onclick="filtrarUbicaciones()">Filtrar</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card endpoint-card">
+                            <div class="card-header">
+                                Crear Ubicación
+                            </div>
+                            <div class="card-body">
+                                <form id="crearUbicacionForm">
+                                    <div class="mb-3">
+                                        <input type="text" class="form-control" id="nombreNuevaUbicacion" placeholder="Nombre" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <select class="form-control" id="tipoNuevaUbicacion" required>
+                                            <option value="">Seleccione tipo</option>
+                                            <option value="ESTABLO">Establo</option>
+                                            <option value="GALLINERO">Gallinero</option>
+                                            <option value="CORRAL">Corral</option>
+                                            <option value="EXTERIOR">Exterior</option>
+                                            <option value="ALMACEN">Almacén</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <input type="number" class="form-control" id="capacidadNuevaUbicacion" placeholder="Capacidad" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-success">Crear Ubicación</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                Respuesta
+                            </div>
+                            <div class="card-body">
+                                <pre class="response-area" id="ubicacionesResponse">La respuesta aparecerá aquí...</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Animales -->
+            <div class="tab-pane fade" id="animales" role="tabpanel">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card endpoint-card">
+                            <div class="card-header">
+                                Listar Animales
+                            </div>
+                            <div class="card-body">
+                                <button class="btn btn-primary" onclick="listarAnimales()">Obtener Animales</button>
+                                <div class="mt-3">
+                                    <h6>Filtros:</h6>
+                                    <select class="form-control mb-2" id="especieAnimal">
+                                        <option value="">Todas las especies</option>
+                                        <option value="VACA">Vaca</option>
+                                        <option value="CABALLO">Caballo</option>
+                                        <option value="GALLINA">Gallina</option>
+                                    </select>
+                                    <input type="number" class="form-control mb-2" id="saludMinima" placeholder="Salud mínima">
+                                    <button class="btn btn-secondary" onclick="filtrarAnimales()">Filtrar</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card endpoint-card">
+                            <div class="card-header">
+                                Crear Animal
+                            </div>
+                            <div class="card-body">
+                                <form id="crearAnimalForm">
+                                    <div class="mb-3">
+                                        <input type="text" class="form-control" id="nombreAnimal" placeholder="Nombre" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <select class="form-control" id="especieNuevoAnimal" required>
+                                            <option value="">Seleccione especie</option>
+                                            <option value="VACA">Vaca</option>
+                                            <option value="CABALLO">Caballo</option>
+                                            <option value="GALLINA">Gallina</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <input type="number" class="form-control" id="saludAnimal" placeholder="Salud (0-100)" min="0" max="100" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <select class="form-control" id="ubicacionAnimal" required>
+                                            <option value="">Seleccione ubicación</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-success">Crear Animal</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="card endpoint-card">
+                            <div class="card-header">
+                                Actualizar Animal
+                            </div>
+                            <div class="card-body">
+                                <form id="actualizarAnimalForm">
+                                    <div class="mb-3">
+                                        <input type="number" class="form-control" id="idAnimalActualizar" placeholder="ID del animal" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <input type="text" class="form-control" id="nombreAnimalActualizar" placeholder="Nuevo nombre">
+                                    </div>
+                                    <div class="mb-3">
+                                        <input type="number" class="form-control" id="saludAnimalActualizar" placeholder="Nueva salud (0-100)" min="0" max="100">
+                                    </div>
+                                    <button type="submit" class="btn btn-warning">Actualizar Animal</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="card endpoint-card">
+                            <div class="card-header">
+                                Eliminar Animal
+                            </div>
+                            <div class="card-body">
+                                <form id="eliminarAnimalForm">
+                                    <div class="mb-3">
+                                        <input type="number" class="form-control" id="idAnimalEliminar" placeholder="ID del animal" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-danger">Eliminar Animal</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                Respuesta
+                            </div>
+                            <div class="card-body">
+                                <pre class="response-area" id="animalesResponse">La respuesta aparecerá aquí...</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empleados -->
+            <div class="tab-pane fade" id="empleados" role="tabpanel">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card endpoint-card">
+                            <div class="card-header">
+                                Listar Empleados
+                            </div>
+                            <div class="card-body">
+                                <button class="btn btn-primary" onclick="listarEmpleados()">Obtener Empleados</button>
+                                <div class="mt-3">
+                                    <h6>Filtros:</h6>
+                                    <input type="text" class="form-control mb-2" id="nombreEmpleado" placeholder="Nombre">
+                                    <input type="text" class="form-control mb-2" id="apellidoEmpleado" placeholder="Apellido">
+                                    <select class="form-control mb-2" id="rolEmpleado">
+                                        <option value="">Todos los roles</option>
+                                        <option value="ADMINISTRADOR">Administrador</option>
+                                        <option value="VETERINARIO">Veterinario</option>
+                                        <option value="CUIDADOR">Cuidador</option>
+                                        <option value="MANTENIMIENTO">Mantenimiento</option>
+                                    </select>
+                                    <button class="btn btn-secondary" onclick="filtrarEmpleados()">Filtrar</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card endpoint-card">
+                            <div class="card-header">
+                                Crear Empleado
+                            </div>
+                            <div class="card-body">
+                                <form id="crearEmpleadoForm">
+                                    <div class="mb-3">
+                                        <input type="text" class="form-control" id="nombreNuevoEmpleado" placeholder="Nombre" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <input type="text" class="form-control" id="apellidoNuevoEmpleado" placeholder="Apellido" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <input type="email" class="form-control" id="emailNuevoEmpleado" placeholder="Email" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <input type="password" class="form-control" id="passwordNuevoEmpleado" placeholder="Contraseña" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <select class="form-control" id="rolNuevoEmpleado" required>
+                                            <option value="">Seleccione rol</option>
+                                            <option value="ADMINISTRADOR">Administrador</option>
+                                            <option value="VETERINARIO">Veterinario</option>
+                                            <option value="CUIDADOR">Cuidador</option>
+                                            <option value="MANTENIMIENTO">Mantenimiento</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-success">Crear Empleado</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="card endpoint-card">
+                            <div class="card-header">
+                                Actualizar Empleado
+                            </div>
+                            <div class="card-body">
+                                <form id="actualizarEmpleadoForm">
+                                    <div class="mb-3">
+                                        <input type="number" class="form-control" id="idEmpleadoActualizar" placeholder="ID del empleado" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <input type="text" class="form-control" id="nombreEmpleadoActualizar" placeholder="Nuevo nombre">
+                                    </div>
+                                    <div class="mb-3">
+                                        <input type="text" class="form-control" id="apellidoEmpleadoActualizar" placeholder="Nuevo apellido">
+                                    </div>
+                                    <div class="mb-3">
+                                        <input type="email" class="form-control" id="emailEmpleadoActualizar" placeholder="Nuevo email">
+                                    </div>
+                                    <div class="mb-3">
+                                        <select class="form-control" id="rolEmpleadoActualizar">
+                                            <option value="">Mantener rol actual</option>
+                                            <option value="ADMINISTRADOR">Administrador</option>
+                                            <option value="VETERINARIO">Veterinario</option>
+                                            <option value="CUIDADOR">Cuidador</option>
+                                            <option value="MANTENIMIENTO">Mantenimiento</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-warning">Actualizar Empleado</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="card endpoint-card">
+                            <div class="card-header">
+                                Eliminar Empleado
+                            </div>
+                            <div class="card-body">
+                                <form id="eliminarEmpleadoForm">
+                                    <div class="mb-3">
+                                        <input type="number" class="form-control" id="idEmpleadoEliminar" placeholder="ID del empleado" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-danger">Eliminar Empleado</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                Respuesta
+                            </div>
+                            <div class="card-body">
+                                <pre class="response-area" id="empleadosResponse">La respuesta aparecerá aquí...</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actividades -->
+            <div class="tab-pane fade" id="actividades" role="tabpanel">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card endpoint-card">
+                            <div class="card-header">
+                                Actividades Disponibles
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-4">
+                                    <h5>Actividades de Limpieza</h5>
+                                    <div class="d-grid gap-2">
+                                        <button class="btn btn-primary" onclick="realizarLimpieza()">Realizar Limpieza General</button>
+                                        <button class="btn btn-info" onclick="realizarLimpiezaEstablo()">Limpiar Establo</button>
+                                        <button class="btn btn-info" onclick="realizarLimpiezaGallinero()">Limpiar Gallinero</button>
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <h5>Actividades de Salud</h5>
+                                    <div class="d-grid gap-2">
+                                        <button class="btn btn-success" onclick="realizarRevisionSalud()">Revisión General de Salud</button>
+                                        <button class="btn btn-warning" onclick="realizarTratamientoVeterinario()">Tratamiento Veterinario</button>
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <h5>Actividades de Alimentación</h5>
+                                    <div class="d-grid gap-2">
+                                        <button class="btn btn-primary" onclick="realizarAlimentacion()">Alimentación General</button>
+                                        <button class="btn btn-info" onclick="realizarAlimentacionEspecifica()">Alimentación Específica</button>
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <h5>Actividades de Mantenimiento</h5>
+                                    <div class="d-grid gap-2">
+                                        <button class="btn btn-secondary" onclick="realizarMantenimiento()">Mantenimiento General</button>
+                                        <button class="btn btn-dark" onclick="realizarReparacion()">Reparación de Instalaciones</button>
+                                    </div>
+                                </div>
+                                <!-- Formulario para crear nueva actividad -->
+                                <div class="mb-4">
+                                    <h5>Registrar Nueva Actividad</h5>
+                                    <form id="crearActividadForm">
+                                        <div class="mb-2">
+                                            <label for="tipoNuevaActividad" class="form-label">Tipo de Actividad</label>
+                                            <select class="form-control" id="tipoNuevaActividad" required>
+                                                <option value="">Seleccione tipo</option>
+                                                <option value="ALIMENTACION_MATUTINA">Alimentación matutina</option>
+                                                <option value="ALIMENTACION_VESPERTINA">Alimentación vespertina</option>
+                                                <option value="LIMPIEZA_CORRAL">Limpieza de corral</option>
+                                                <option value="LIMPIEZA_ESTABLO">Limpieza de establo</option>
+                                                <option value="REVISION_GENERAL">Revisión general de salud</option>
+                                                <option value="VACUNACION_ANUAL">Vacunación anual</option>
+                                                <option value="TRATAMIENTO_MEDICO">Tratamiento médico</option>
+                                                <option value="TRASLADO_CORRAL">Traslado a otro corral</option>
+                                                <option value="TRASLADO_ESTABLO">Traslado a establo</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label for="empleadoActividad" class="form-label">Empleado Responsable</label>
+                                            <select class="form-control" id="empleadoActividad" required>
+                                                <option value="">Seleccione empleado</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label for="animalesAfectados" class="form-label">Animales Afectados</label>
+                                            <select class="form-control" id="animalesAfectados" multiple>
+                                            </select>
+                                            <small class="form-text text-muted">Puede seleccionar varios animales (Ctrl+Click)</small>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label for="observacionesActividad" class="form-label">Observaciones</label>
+                                            <input type="text" class="form-control" id="observacionesActividad" placeholder="Observaciones (opcional)">
+                                        </div>
+                                        <button type="submit" class="btn btn-success">Registrar Actividad</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card endpoint-card">
+                            <div class="card-header">
+                                Historial de Actividades
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <h6>Filtros:</h6>
+                                    <select class="form-control mb-2" id="tipoActividad">
+                                        <option value="">Todos los tipos</option>
+                                        <option value="LIMPIEZA">Limpieza</option>
+                                        <option value="SALUD">Salud</option>
+                                        <option value="ALIMENTACION">Alimentación</option>
+                                        <option value="MANTENIMIENTO">Mantenimiento</option>
+                                    </select>
+                                    <button class="btn btn-secondary" onclick="filtrarActividades()">Filtrar</button>
+                                </div>
+                                <button class="btn btn-primary" onclick="listarActividades()">Ver Historial</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                Respuesta
+                            </div>
+                            <div class="card-body">
+                                <pre class="response-area" id="actividadesResponse">La respuesta aparecerá aquí...</pre>
+                            </div>
+                        </div>
+                        
+                        <!-- Nuevo panel de resumen de actividades -->
+                        <div class="card mt-4">
+                            <div class="card-header">
+                                Resumen de Actividades
+                            </div>
+                            <div class="card-body">
+                                <div id="actividadesResumen" class="table-responsive">
+                                    <table class="table table-striped table-hover">
+                                        <thead class="table-primary">
+                                            <tr>
+                                                <th>Tipo</th>
+                                                <th>Total</th>
+                                                <th>Última</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="actividadesResumenBody">
+                                            <tr>
+                                                <td colspan="3" class="text-center">Cargando datos...</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inventario -->
+            <div class="tab-pane fade" id="inventario" role="tabpanel">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card endpoint-card">
+                            <div class="card-header">
+                                Listar Inventario
+                            </div>
+                            <div class="card-body">
+                                <button class="btn btn-primary" onclick="listarInventario()">Obtener Inventario</button>
+                                <div class="mt-3">
+                                    <h6>Filtros:</h6>
+                                    <select class="form-control mb-2" id="tipoInventario">
+                                        <option value="">Todos los tipos</option>
+                                        <option value="ALIMENTO">Alimentos</option>
+                                        <option value="MEDICINA">Medicamentos</option>
+                                        <option value="HERRAMIENTA">Herramientas</option>
+                                        <option value="MATERIAL_LIMPIEZA">Material de Limpieza</option>
+                                        <option value="OTRO">Otros</option>
+                                    </select>
+                                    <button class="btn btn-secondary" onclick="filtrarInventario()">Filtrar</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card endpoint-card">
+                            <div class="card-header">
+                                Añadir al Inventario
+                            </div>
+                            <div class="card-body">
+                                <form id="crearInventarioForm">
+                                    <div class="mb-3">
+                                        <input type="text" class="form-control" id="nombreInventario" placeholder="Nombre" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <select class="form-control" id="tipoNuevoInventario" required>
+                                            <option value="">Seleccione tipo</option>
+                                            <option value="ALIMENTO">Alimento</option>
+                                            <option value="MEDICINA">Medicina</option>
+                                            <option value="HERRAMIENTA">Herramienta</option>
+                                            <option value="MATERIAL_LIMPIEZA">Material de Limpieza</option>
+                                            <option value="OTRO">Otro</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <input type="number" class="form-control" id="cantidadInventario" placeholder="Cantidad" required min="1">
+                                    </div>
+                                    <div class="mb-3">
+                                        <input type="number" class="form-control" id="cantidadMinimaInventario" placeholder="Cantidad mínima" required min="0">
+                                    </div>
+                                    <div class="mb-3">
+                                        <textarea class="form-control" id="descripcionInventario" placeholder="Descripción" rows="3"></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-success">Añadir Item</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                Respuesta
+                            </div>
+                            <div class="card-body">
+                                <pre class="response-area" id="inventarioResponse">La respuesta aparecerá aquí...</pre>
+                            </div>
+                        </div>
+                        <div class="card mt-4">
+                            <div class="card-header">
+                                Resumen de Inventario
+                            </div>
+                            <div class="card-body">
+                                <div id="inventarioResumen" class="table-responsive">
+                                    <table class="table table-striped table-hover">
+                                        <thead class="table-primary">
+                                            <tr>
+                                                <th>Tipo</th>
+                                                <th>Cantidad Total</th>
+                                                <th>Estado</th>
+                                                <th>Items</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="inventarioResumenBody">
+                                            <tr>
+                                                <td colspan="4" class="text-center">Cargando datos...</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Usar una URL relativa para API_BASE_URL para que funcione tanto en local como en Azure
+        const API_BASE_URL = '/api';
+
+        // Funciones para cargar datos en los selectores
+        async function cargarUbicaciones() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/ubicaciones/selector`);
+                const ubicaciones = await response.json();
+                const ubicacionSelects = ['ubicacionAnimal', 'ubicacionActividad'];
+                
+                ubicacionSelects.forEach(selectId => {
+                    const select = document.getElementById(selectId);
+                    const especieSelect = document.getElementById('especieNuevoAnimal');
+                    select.innerHTML = '<option value="">Seleccione ubicación</option>';
+                    
+                    // Función para actualizar las ubicaciones según la especie seleccionada
+                    const actualizarUbicacionesPorEspecie = () => {
+                        const especieSeleccionada = especieSelect ? especieSelect.value : '';
+                        select.innerHTML = '<option value="">Seleccione ubicación</option>';
+                        
+                        ubicaciones.forEach(ubicacion => {
+                            // Si no hay especie seleccionada o la ubicación permite esta especie
+                            if (!especieSeleccionada || 
+                                ubicacion.especiesPermitidas.includes(especieSeleccionada)) {
+                                // Mostrar indicador de capacidad disponible
+                                const estadoCapacidad = ubicacion.disponible ? 
+                                    'disponible' : 'llena';
+                                const ocupacion = `${ubicacion.ocupacionActual}/${ubicacion.capacidad}`;
+                                
+                                select.innerHTML += `<option value="${ubicacion.id}" 
+                                    ${!ubicacion.disponible ? 'disabled' : ''}>
+                                    ${ubicacion.nombre} (${ubicacion.tipo}) - ${ocupacion} [${estadoCapacidad}]
+                                    </option>`;
+                            }
+                        });
+                    };
+                    
+                    // Actualizar al cargar inicialmente
+                    actualizarUbicacionesPorEspecie();
+                    
+                    // Añadir event listener para actualizar cuando cambie la especie (solo para ubicacionAnimal)
+                    if (selectId === 'ubicacionAnimal' && especieSelect) {
+                        especieSelect.addEventListener('change', actualizarUbicacionesPorEspecie);
+                    }
+                });
+            } catch (error) {
+                console.error('Error al cargar ubicaciones:', error);
+            }
+        }
+
+        async function cargarEmpleados() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/empleados`);
+                const empleados = await response.json();
+                const empleadoSelect = document.getElementById('empleadoActividad');
+                
+                empleadoSelect.innerHTML = '<option value="">Seleccione empleado</option>';
+                empleados.forEach(empleado => {
+                    empleadoSelect.innerHTML += `<option value="${empleado.id}">${empleado.nombre} ${empleado.apellido}</option>`;
+                });
+            } catch (error) {
+                console.error('Error al cargar empleados:', error);
+            }
+        }
+
+        // Cargar datos al iniciar
+        document.addEventListener('DOMContentLoaded', () => {
+            cargarUbicaciones();
+            cargarEmpleados();
+            listarInventario();
+            listarActividades();
+            listarUbicaciones();
+            listarAnimales();
+            listarEmpleados();
+        });
+
+        // Funciones para Ubicaciones
+        async function listarUbicaciones() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/ubicaciones`);
+                const data = await response.json();
+                
+                // Get the response element
+                const ubicacionesResponseElement = document.getElementById('ubicacionesResponse');
+                
+                if (data.length === 0) {
+                    ubicacionesResponseElement.innerHTML = `
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> No hay ubicaciones registradas
+                        </div>`;
+                    return;
+                }
+                
+                // Create a table for a nice display
+                let tableHTML = `
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                    <th>Capacidad</th>
+                                    <th>Ocupación</th>
+                                    <th>Limpieza</th>
+                                    <th>Especies</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                // Add rows for each location
+                data.forEach(ubicacion => {
+                    // Determine cleaning status class
+                    let limpiezaClass = 'bg-success text-white';
+                    if (ubicacion.nivelLimpieza < 30) {
+                        limpiezaClass = 'bg-danger text-white';
+                    } else if (ubicacion.nivelLimpieza < 70) {
+                        limpiezaClass = 'bg-warning text-dark';
+                    }
+                    
+                    // Determine occupancy status
+                    let ocupacionClass = 'bg-info text-white';
+                    if (ubicacion.ocupacionActual >= ubicacion.capacidad) {
+                        ocupacionClass = 'bg-danger text-white';
+                    } else if (ubicacion.ocupacionActual >= ubicacion.capacidad * 0.8) {
+                        ocupacionClass = 'bg-warning text-dark';
+                    }
+                    
+                    // Format permitted species
+                    let especiesHTML = '';
+                    if (ubicacion.especiesPermitidas && ubicacion.especiesPermitidas.length > 0) {
+                        especiesHTML = ubicacion.especiesPermitidas.map(especie => 
+                            `<span class="badge bg-secondary">${especie}</span>`
+                        ).join(' ');
+                    } else {
+                        especiesHTML = '<span class="text-muted">-</span>';
+                    }
+                    
+                    tableHTML += `
+                        <tr>
+                            <td>${ubicacion.id}</td>
+                            <td>${ubicacion.nombre}</td>
+                            <td><span class="badge bg-primary">${ubicacion.tipo}</span></td>
+                            <td>${ubicacion.capacidad}</td>
+                            <td><span class="badge ${ocupacionClass}">${ubicacion.ocupacionActual}/${ubicacion.capacidad}</span></td>
+                            <td><span class="badge ${limpiezaClass}">${ubicacion.nivelLimpieza}%</span></td>
+                            <td>${especiesHTML}</td>
+                        </tr>
+                    `;
+                });
+                
+                tableHTML += `
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="card mt-3">
+                        <div class="card-header bg-secondary text-white">
+                            <i class="fas fa-chart-pie"></i> Resumen de Ubicaciones
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="card text-center">
+                                        <div class="card-body">
+                                            <h5>${data.length}</h5>
+                                            <p class="text-muted">Total Ubicaciones</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card text-center">
+                                        <div class="card-body">
+                                            <h5>${data.reduce((acc, curr) => acc + curr.capacidad, 0)}</h5>
+                                            <p class="text-muted">Capacidad Total</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card text-center">
+                                        <div class="card-body">
+                                            <h5>${data.reduce((acc, curr) => acc + curr.ocupacionActual, 0)}</h5>
+                                            <p class="text-muted">Ocupación Actual</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Replace JSON output with table
+                ubicacionesResponseElement.innerHTML = tableHTML;
+                
+            } catch (error) {
+                document.getElementById('ubicacionesResponse').innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i> <strong>Error:</strong> ${error.message}
+                    </div>`;
+            }
+        }
+
+        async function filtrarUbicaciones() {
+            const nombre = document.getElementById('nombreUbicacion').value;
+            const tipo = document.getElementById('tipoUbicacion').value;
+            
+            let url = `${API_BASE_URL}/ubicaciones?`;
+            if (nombre) url += `nombre=${encodeURIComponent(nombre)}&`;
+            if (tipo) url += `tipo=${encodeURIComponent(tipo)}`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                // Get the response element
+                const ubicacionesResponseElement = document.getElementById('ubicacionesResponse');
+                
+                if (data.length === 0) {
+                    ubicacionesResponseElement.innerHTML = `
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> No se encontraron ubicaciones con los filtros especificados
+                        </div>`;
+                    return;
+                }
+                
+                // Create a table for a nice display (using the same format as in listarUbicaciones)
+                let tableHTML = `
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                    <th>Capacidad</th>
+                                    <th>Ocupación</th>
+                                    <th>Limpieza</th>
+                                    <th>Especies</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                // Add rows for each location
+                data.forEach(ubicacion => {
+                    // Determine cleaning status class
+                    let limpiezaClass = 'bg-success text-white';
+                    if (ubicacion.nivelLimpieza < 30) {
+                        limpiezaClass = 'bg-danger text-white';
+                    } else if (ubicacion.nivelLimpieza < 70) {
+                        limpiezaClass = 'bg-warning text-dark';
+                    }
+                    
+                    // Determine occupancy status
+                    let ocupacionClass = 'bg-info text-white';
+                    if (ubicacion.ocupacionActual >= ubicacion.capacidad) {
+                        ocupacionClass = 'bg-danger text-white';
+                    } else if (ubicacion.ocupacionActual >= ubicacion.capacidad * 0.8) {
+                        ocupacionClass = 'bg-warning text-dark';
+                    }
+                    
+                    // Format permitted species
+                    let especiesHTML = '';
+                    if (ubicacion.especiesPermitidas && ubicacion.especiesPermitidas.length > 0) {
+                        especiesHTML = ubicacion.especiesPermitidas.map(especie => 
+                            `<span class="badge bg-secondary">${especie}</span>`
+                        ).join(' ');
+                    } else {
+                        especiesHTML = '<span class="text-muted">-</span>';
+                    }
+                    
+                    tableHTML += `
+                        <tr>
+                            <td>${ubicacion.id}</td>
+                            <td>${ubicacion.nombre}</td>
+                            <td><span class="badge bg-primary">${ubicacion.tipo}</span></td>
+                            <td>${ubicacion.capacidad}</td>
+                            <td><span class="badge ${ocupacionClass}">${ubicacion.ocupacionActual}/${ubicacion.capacidad}</span></td>
+                            <td><span class="badge ${limpiezaClass}">${ubicacion.nivelLimpieza}%</span></td>
+                            <td>${especiesHTML}</td>
+                        </tr>
+                    `;
+                });
+                
+                tableHTML += `
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <i class="fas fa-filter"></i> <strong>Filtros aplicados:</strong>
+                        ${nombre ? `Nombre: ${nombre}` : ''}
+                        ${tipo ? `Tipo: ${tipo}` : ''}
+                    </div>
+                `;
+                
+                // Replace JSON output with table
+                ubicacionesResponseElement.innerHTML = tableHTML;
+                
+            } catch (error) {
+                document.getElementById('ubicacionesResponse').innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i> <strong>Error:</strong> ${error.message}
+                    </div>`;
+            }
+        }
+
+        document.getElementById('crearUbicacionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const ubicacion = {
+                nombre: document.getElementById('nombreNuevaUbicacion').value,
+                tipo: document.getElementById('tipoNuevaUbicacion').value,
+                capacidad: parseInt(document.getElementById('capacidadNuevaUbicacion').value),
+                ocupacionActual: 0,
+                nivelLimpieza: 100
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/ubicaciones`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(ubicacion)
+                });
+                const data = await response.json();
+                document.getElementById('ubicacionesResponse').textContent = JSON.stringify(data, null, 2);
+                e.target.reset();
+            } catch (error) {
+                document.getElementById('ubicacionesResponse').textContent = `Error: ${error.message}`;
+            }
+        });
+
+        // Funciones para Animales
+        async function listarAnimales() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/animales`);
+                const data = await response.json();
+                
+                // Get response element
+                const animalesResponseElement = document.getElementById('animalesResponse');
+                
+                if (data.length === 0) {
+                    animalesResponseElement.innerHTML = `
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> No hay animales registrados
+                        </div>`;
+                    return;
+                }
+                
+                // Create a table for a nice display
+                let tableHTML = `
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Especie</th>
+                                    <th>Edad</th>
+                                    <th>Salud</th>
+                                    <th>Ubicación</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                // Add rows for each animal
+                data.forEach(animal => {
+                    // Determine health status class
+                    let saludClass = 'bg-success text-white';
+                    if (animal.salud < 50) {
+                        saludClass = 'bg-danger text-white';
+                    } else if (animal.salud < 80) {
+                        saludClass = 'bg-warning text-dark';
+                    }
+                    
+                    // Get ubicación info, handling either string or object
+                    let ubicacionText = '-';
+                    if (animal.ubicacion) {
+                        if (typeof animal.ubicacion === 'string') {
+                            ubicacionText = animal.ubicacion;
+                        } else if (animal.ubicacion.nombre) {
+                            ubicacionText = `${animal.ubicacion.nombre} (${animal.ubicacion.tipo || ''})`;
+                        }
+                    }
+                    
+                    tableHTML += `
+                        <tr>
+                            <td>${animal.id}</td>
+                            <td>${animal.nombre}</td>
+                            <td><span class="badge bg-primary">${animal.especie}</span></td>
+                            <td>${animal.edad || '-'} años</td>
+                            <td><span class="badge ${saludClass}">${animal.salud}%</span></td>
+                            <td>${ubicacionText}</td>
+                        </tr>
+                    `;
+                });
+                
+                tableHTML += `
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="card mt-3">
+                        <div class="card-header bg-secondary text-white">
+                            <i class="fas fa-chart-pie"></i> Resumen
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="card text-center">
+                                        <div class="card-body">
+                                            <h5>${data.length}</h5>
+                                            <p class="text-muted">Total Animales</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card text-center">
+                                        <div class="card-body">
+                                            <h5>${data.filter(a => a.salud >= 80).length}</h5>
+                                            <p class="text-muted">Salud Óptima</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card text-center">
+                                        <div class="card-body">
+                                            <h5>${data.filter(a => a.salud < 50).length}</h5>
+                                            <p class="text-muted">Necesitan Atención</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Replace JSON output with table
+                animalesResponseElement.innerHTML = tableHTML;
+                
+            } catch (error) {
+                document.getElementById('animalesResponse').innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i> <strong>Error:</strong> ${error.message}
+                    </div>`;
+            }
+        }
+
+        async function filtrarAnimales() {
+            const especie = document.getElementById('especieAnimal').value;
+            const saludMinima = document.getElementById('saludMinima').value;
+            
+            let url = `${API_BASE_URL}/animales?`;
+            if (especie) url += `especie=${encodeURIComponent(especie)}&`;
+            if (saludMinima) url += `saludMinima=${encodeURIComponent(saludMinima)}`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                // Use the same table format as listarAnimales
+                const animalesResponseElement = document.getElementById('animalesResponse');
+                
+                if (data.length === 0) {
+                    animalesResponseElement.innerHTML = `
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> No se encontraron animales con los filtros especificados
+                        </div>`;
+                    return;
+                }
+                
+                // Create a table for a nice display (same as listarAnimales)
+                let tableHTML = `
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Especie</th>
+                                    <th>Edad</th>
+                                    <th>Salud</th>
+                                    <th>Ubicación</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                // Add rows for each animal
+                data.forEach(animal => {
+                    // Determine health status class
+                    let saludClass = 'bg-success text-white';
+                    if (animal.salud < 50) {
+                        saludClass = 'bg-danger text-white';
+                    } else if (animal.salud < 80) {
+                        saludClass = 'bg-warning text-dark';
+                    }
+                    
+                    // Get ubicación info, handling either string or object
+                    let ubicacionText = '-';
+                    if (animal.ubicacion) {
+                        if (typeof animal.ubicacion === 'string') {
+                            ubicacionText = animal.ubicacion;
+                        } else if (animal.ubicacion.nombre) {
+                            ubicacionText = `${animal.ubicacion.nombre} (${animal.ubicacion.tipo || ''})`;
+                        }
+                    }
+                    
+                    tableHTML += `
+                        <tr>
+                            <td>${animal.id}</td>
+                            <td>${animal.nombre}</td>
+                            <td><span class="badge bg-primary">${animal.especie}</span></td>
+                            <td>${animal.edad || '-'} años</td>
+                            <td><span class="badge ${saludClass}">${animal.salud}%</span></td>
+                            <td>${ubicacionText}</td>
+                        </tr>
+                    `;
+                });
+                
+                tableHTML += `
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <i class="fas fa-filter"></i> <strong>Filtros aplicados:</strong>
+                        ${especie ? `Especie: ${especie}` : ''}
+                        ${saludMinima ? `Salud mínima: ${saludMinima}%` : ''}
+                    </div>
+                `;
+                
+                // Replace JSON output with table
+                animalesResponseElement.innerHTML = tableHTML;
+                
+            } catch (error) {
+                document.getElementById('animalesResponse').innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i> <strong>Error:</strong> ${error.message}
+                    </div>`;
+            }
+        }
+
+        // Event listeners para formularios de animales
+        // Event listener para formulario de crear actividad
+        document.getElementById('crearActividadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const tipo = document.getElementById('tipoNuevaActividad').value;
+            const empleadoId = document.getElementById('empleadoActividad').value;
+            const animalesSelect = document.getElementById('animalesAfectados');
+            const animalesIds = Array.from(animalesSelect.selectedOptions).map(opt => parseInt(opt.value));
+            const observaciones = document.getElementById('observacionesActividad').value;
+
+            const actividad = {
+                tipo: tipo,
+                realizadaPor: { id: parseInt(empleadoId) },
+                afectaA: animalesIds.map(id => ({ id })),
+                observaciones: observaciones
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/actividades`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(actividad)
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('actividadesResponse').innerHTML = `
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle"></i> <strong>¡Éxito!</strong> Actividad registrada correctamente.
+                        </div>
+                    `;
+                    e.target.reset();
+                    listarActividades();
+                } else {
+                    const error = await response.text();
+                    document.getElementById('actividadesResponse').innerHTML = `
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-circle"></i> <strong>Error:</strong> No se pudo registrar la actividad.<br>${error}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('actividadesResponse').innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i> <strong>Error:</strong> ${error.message}
+                    </div>
+                `;
+            }
+        });
+
+        // Cargar empleados y animales en selects del formulario de actividad
+        async function cargarEmpleadosYAnimalesParaActividad() {
+            // Empleados
+            const empleadosSelect = document.getElementById('empleadoActividad');
+            empleadosSelect.innerHTML = '<option value="">Seleccione empleado</option>';
+            try {
+                const response = await fetch(`${API_BASE_URL}/empleados`);
+                const empleados = await response.json();
+                empleados.forEach(emp => {
+                    empleadosSelect.innerHTML += `<option value="${emp.id}">${emp.nombre} ${emp.apellido || ''}</option>`;
+                });
+            } catch {}
+            // Animales
+            const animalesSelect = document.getElementById('animalesAfectados');
+            animalesSelect.innerHTML = '';
+            try {
+                const response = await fetch(`${API_BASE_URL}/animales`);
+                const animales = await response.json();
+                animales.forEach(animal => {
+                    animalesSelect.innerHTML += `<option value="${animal.id}">${animal.nombre} (${animal.especie})</option>`;
+                });
+            } catch {}
+        }
+        // Llamar al cargar la página
+        cargarEmpleadosYAnimalesParaActividad();
+        document.getElementById('crearAnimalForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const animal = {
+                nombre: document.getElementById('nombreAnimal').value,
+                especie: document.getElementById('especieNuevoAnimal').value,
+                salud: parseInt(document.getElementById('saludAnimal').value),
+                ubicacion: {
+                    id: parseInt(document.getElementById('ubicacionAnimal').value)
+                }
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/animales`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(animal)
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('animalesResponse').innerHTML = `
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle"></i> <strong>¡Éxito!</strong> Animal "${data.nombre}" creado exitosamente.
+                        </div>
+                    `;
+                    e.target.reset();
+                    listarAnimales();
+                } else {
+                    const error = await response.text();
+                    document.getElementById('animalesResponse').innerHTML = `
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-circle"></i> <strong>Error:</strong> No se pudo crear el animal.
+                            ${error ? `<br>Detalle: ${error}` : ''}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('animalesResponse').innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i> <strong>Error:</strong> ${error.message}
+                    </div>
+                `;
+            }
+        });
+
+        document.getElementById('actualizarAnimalForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('idAnimalActualizar').value;
+            const updateData = {};
+            
+            // Solo incluir campos que tienen valor
+            const nombre = document.getElementById('nombreAnimalActualizar').value;
+            const salud = document.getElementById('saludAnimalActualizar').value;
+            
+            if (nombre) updateData.nombre = nombre;
+            if (salud) updateData.salud = parseInt(salud);
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/animales/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(updateData)
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('animalesResponse').innerHTML = `
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle"></i> <strong>¡Éxito!</strong> Animal actualizado exitosamente.
+                        </div>
+                    `;
+                    e.target.reset();
+                    listarAnimales();
+                } else {
+                    const error = await response.text();
+                    document.getElementById('animalesResponse').innerHTML = `
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-circle"></i> <strong>Error:</strong> No se pudo actualizar el animal.
+                            ${error ? `<br>Detalle: ${error}` : ''}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('animalesResponse').innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i> <strong>Error:</strong> ${error.message}
+                    </div>
+                `;
+            }
+        });
+
+        document.getElementById('eliminarAnimalForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('idAnimalEliminar').value;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/animales/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    document.getElementById('animalesResponse').innerHTML = `
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle"></i> <strong>¡Éxito!</strong> El animal con ID ${id} ha sido eliminado exitosamente.
+                        </div>
+                    `;
+                    e.target.reset();
+                    listarAnimales();
+                } else {
+                    const error = await response.text();
+                    document.getElementById('animalesResponse').innerHTML = `
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-circle"></i> <strong>Error:</strong> No se pudo eliminar el animal.
+                            ${error ? `<br>Detalle: ${error}` : ''}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('animalesResponse').innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i> <strong>Error:</strong> ${error.message}
+                    </div>
+                `;
+            }
+        });
+
+        // Funciones para Empleados
+        async function listarEmpleados() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/empleados`);
+                const data = await response.json();
+                
+                // Get the response element
+                const empleadosResponseElement = document.getElementById('empleadosResponse');
+                
+                if (data.length === 0) {
+                    empleadosResponseElement.innerHTML = `
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> No hay empleados registrados
+                        </div>`;
+                    return;
+                }
+                
+                // Create a table for a nice display
+                let tableHTML = `
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Apellido</th>
+                                    <th>Email</th>
+                                    <th>Rol</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                // Add rows for each employee
+                data.forEach(empleado => {
+                    // Determine role class
+                    let rolClass = 'bg-primary';
+                    if (empleado.rol === 'ADMIN') {
+                        rolClass = 'bg-danger';
+                    } else if (empleado.rol === 'MANAGER') {
+                        rolClass = 'bg-warning text-dark';
+                    } else if (empleado.rol === 'VETERINARIO') {
+                        rolClass = 'bg-success';
+                    }
+                    
+                    tableHTML += `
+                        <tr>
+                            <td>${empleado.id}</td>
+                            <td>${empleado.nombre}</td>
+                            <td>${empleado.apellido}</td>
+                            <td>${empleado.email}</td>
+                            <td><span class="badge ${rolClass}">${empleado.rol}</span></td>
+                            <td><span class="badge bg-success">Activo</span></td>
+                        </tr>
+                    `;
+                });
+                
+                tableHTML += `
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="card mt-3">
+                        <div class="card-header bg-secondary text-white">
+                            <i class="fas fa-users"></i> Resumen de Empleados
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="card text-center">
+                                        <div class="card-body">
+                                            <h5>${data.length}</h5>
+                                            <p class="text-muted">Total Empleados</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card text-center">
+                                        <div class="card-body">
+                                            <h5>${data.filter(e => e.rol === 'ADMIN').length}</h5>
+                                            <p class="text-muted">Administradores</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card text-center">
+                                        <div class="card-body">
+                                            <h5>${data.filter(e => e.rol === 'VETERINARIO').length}</h5>
+                                            <p class="text-muted">Veterinarios</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card text-center">
+                                        <div class="card-body">
+                                            <h5>${data.filter(e => e.rol === 'TRABAJADOR').length}</h5>
+                                            <p class="text-muted">Trabajadores</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Replace JSON output with table
+                empleadosResponseElement.innerHTML = tableHTML;
+                
+            } catch (error) {
+                document.getElementById('empleadosResponse').innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i> <strong>Error:</strong> ${error.message}
+                    </div>`;
+            }
+        }
+
+        async function filtrarEmpleados() {
+            const nombre = document.getElementById('nombreEmpleado').value;
+            const apellido = document.getElementById('apellidoEmpleado').value;
+            const rol = document.getElementById('rolEmpleado').value;
+            
+            let url = `${API_BASE_URL}/empleados?`;
+            if (nombre) url += `nombre=${encodeURIComponent(nombre)}&`;
+            if (apellido) url += `apellido=${encodeURIComponent(apellido)}&`;
+            if (rol) url += `rol=${encodeURIComponent(rol)}`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                // Get the response element
+                const empleadosResponseElement = document.getElementById('empleadosResponse');
+                
+                if (data.length === 0) {
+                    empleadosResponseElement.innerHTML = `
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> No se encontraron empleados con los filtros especificados
+                        </div>`;
+                    return;
+                }
+                
+                // Create a table for a nice display (same as listarEmpleados)
+                let tableHTML = `
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Apellido</th>
+                                    <th>Email</th>
+                                    <th>Rol</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                // Add rows for each employee
+                data.forEach(empleado => {
+                    // Determine role class
+                    let rolClass = 'bg-primary';
+                    if (empleado.rol === 'ADMIN') {
+                        rolClass = 'bg-danger';
+                    } else if (empleado.rol === 'MANAGER') {
+                        rolClass = 'bg-warning text-dark';
+                    } else if (empleado.rol === 'VETERINARIO') {
+                        rolClass = 'bg-success';
+                    }
+                    
+                    tableHTML += `
+                        <tr>
+                            <td>${empleado.id}</td>
+                            <td>${empleado.nombre}</td>
+                            <td>${empleado.apellido}</td>
+                            <td>${empleado.email}</td>
+                            <td><span class="badge ${rolClass}">${empleado.rol}</span></td>
+                            <td><span class="badge bg-success">Activo</span></td>
+                        </tr>
+                    `;
+                });
+                
+                tableHTML += `
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <i class="fas fa-filter"></i> <strong>Filtros aplicados:</strong>
+                        ${nombre ? `Nombre: ${nombre}` : ''}
+                        ${apellido ? `Apellido: ${apellido}` : ''}
+                        ${rol ? `Rol: ${rol}` : ''}
+                    </div>
+                `;
+                
+                // Replace JSON output with table
+                empleadosResponseElement.innerHTML = tableHTML;
+                
+            } catch (error) {
+                document.getElementById('empleadosResponse').innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i> <strong>Error:</strong> ${error.message}
+                    </div>`;
+            }
+        }
+
+        document.getElementById('crearEmpleadoForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const empleado = {
+                nombre: document.getElementById('nombreNuevoEmpleado').value,
+                apellido: document.getElementById('apellidoNuevoEmpleado').value,
+                email: document.getElementById('emailNuevoEmpleado').value,
+                password: document.getElementById('passwordNuevoEmpleado').value,
+                rol: document.getElementById('rolNuevoEmpleado').value
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/empleados`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(empleado)
+                });
+                const data = await response.json();
+                document.getElementById('empleadosResponse').textContent = JSON.stringify(data, null, 2);
+                e.target.reset();
+                listarEmpleados();
+            } catch (error) {
+                document.getElementById('empleadosResponse').textContent = `Error: ${error.message}`;
+            }
+        });
+
+        document.getElementById('actualizarEmpleadoForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('idEmpleadoActualizar').value;
+            const empleado = {};
+            
+            const nombre = document.getElementById('nombreEmpleadoActualizar').value;
+            const apellido = document.getElementById('apellidoEmpleadoActualizar').value;
+            const email = document.getElementById('emailEmpleadoActualizar').value;
+            const rol = document.getElementById('rolEmpleadoActualizar').value;
+            
+            if (nombre) empleado.nombre = nombre;
+            if (apellido) empleado.apellido = apellido;
+            if (email) empleado.email = email;
+            if (rol) empleado.rol = rol;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/empleados/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(empleado)
+                });
+                const data = await response.json();
+                document.getElementById('empleadosResponse').textContent = JSON.stringify(data, null, 2);
+                e.target.reset();
+                listarEmpleados();
+            } catch (error) {
+                document.getElementById('empleadosResponse').textContent = `Error: ${error.message}`;
+            }
+        });
+
+        document.getElementById('eliminarEmpleadoForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('idEmpleadoEliminar').value;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/empleados/${id}`, {
+                    method: 'DELETE'
+                });
+                if (response.ok) {
+                    document.getElementById('empleadosResponse').textContent = 'Empleado eliminado exitosamente';
+                    e.target.reset();
+                    listarEmpleados();
+                } else {
+                    const error = await response.json();
+                    document.getElementById('empleadosResponse').textContent = `Error: ${error.message}`;
+                }
+            } catch (error) {
+                document.getElementById('empleadosResponse').textContent = `Error: ${error.message}`;
+            }
+        });
+
+        // Funciones para Actividades
+        async function realizarLimpieza() {
+            try {
+                const actividad = {
+                    tipo: "LIMPIEZA_CORRAL",
+                    fecha: new Date().toISOString(),
+                    afectaA: [], // Se aplicará a todos los animales en las ubicaciones
+                    observaciones: "Limpieza general realizada"
+                };
+                const response = await fetch(`${API_BASE_URL}/actividades`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(actividad)
+                });
+                const data = await response.json();
+                document.getElementById('actividadesResponse').textContent = JSON.stringify(data, null, 2);
+                listarActividades();
+            } catch (error) {
+                document.getElementById('actividadesResponse').textContent = `Error: ${error.message}`;
+            }
+        }
+
+        async function realizarLimpiezaEstablo() {
+            try {
+                const actividad = {
+                    tipo: "LIMPIEZA_ESTABLO",
+                    fecha: new Date().toISOString(),
+                    afectaA: [], // Se aplicará a todos los animales en el establo
+                    observaciones: "Limpieza de establo realizada"
+                };
+                const response = await fetch(`${API_BASE_URL}/actividades`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(actividad)
+                });
+                const data = await response.json();
+                document.getElementById('actividadesResponse').textContent = JSON.stringify(data, null, 2);
+                listarActividades();
+            } catch (error) {
+                document.getElementById('actividadesResponse').textContent = `Error: ${error.message}`;
+            }
+        }
+
+        async function realizarRevisionSalud() {
+            try {
+                const actividad = {
+                    tipo: "REVISION_GENERAL",
+                    fecha: new Date().toISOString(),
+                    afectaA: [], // Se aplicará a todos los animales
+                    observaciones: "Revisión general de salud realizada"
+                };
+                const response = await fetch(`${API_BASE_URL}/actividades`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(actividad)
+                });
+                const data = await response.json();
+                
+                // Show success message with activity details
+                const actividadesResponseElement = document.getElementById('actividadesResponse');
+                actividadesResponseElement.innerHTML = `
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i> <strong>¡Éxito!</strong> Actividad registrada correctamente
+                    </div>
+                    <div class="card">
+                        <div class="card-header bg-success text-white">
+                            <strong>${data.descripcionTipo || data.tipo}</strong> - Nueva actividad registrada
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>Fecha:</strong> ${new Date(data.fecha).toLocaleString()}</li>
+                            <li class="list-group-item"><strong>Observaciones:</strong> ${data.observaciones || '-'}</li>
+                        </ul>
+                    </div>
+                `;
+                
+                // Load updated list after short delay
+                setTimeout(() => {
+                    listarActividades();
+                }, 2000);
+            } catch (error) {
+                document.getElementById('actividadesResponse').innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i> <strong>Error:</strong> ${error.message}
+                    </div>`;
+            }
+        }
+
+        async function realizarTratamientoVeterinario() {
+            try {
+                const actividad = {
+                    tipo: "TRATAMIENTO_MEDICO",
+                    fecha: new Date().toISOString(),
+                    afectaA: [], // Se aplicará a los animales que lo necesiten
+                    observaciones: "Tratamiento veterinario realizado"
+                };
+                const response = await fetch(`${API_BASE_URL}/actividades`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(actividad)
+                });
+                const data = await response.json();
+                document.getElementById('actividadesResponse').textContent = JSON.stringify(data, null, 2);
+                listarActividades();
+            } catch (error) {
+                document.getElementById('actividadesResponse').textContent = `Error: ${error.message}`;
+            }
+        }
+
+        async function realizarAlimentacion() {
+            try {
+                const actividad = {
+                    tipo: "ALIMENTACION_MATUTINA",
+                    fecha: new Date().toISOString(),
+                    afectaA: [], // Se aplicará a todos los animales
+                    observaciones: "Alimentación general realizada"
+                };
+                const response = await fetch(`${API_BASE_URL}/actividades`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(actividad)
+                });
+                const data = await response.json();
+                document.getElementById('actividadesResponse').textContent = JSON.stringify(data, null, 2);
+                listarActividades();
+            } catch (error) {
+                document.getElementById('actividadesResponse').textContent = `Error: ${error.message}`;
+            }
+        }
+
+        async function realizarAlimentacionEspecifica() {
+            try {
+                const actividad = {
+                    tipo: "ALIMENTACION_VESPERTINA",
+                    fecha: new Date().toISOString(),
+                    afectaA: [], // Se aplicará a animales específicos
+                    observaciones: "Alimentación específica realizada"
+                };
+                const response = await fetch(`${API_BASE_URL}/actividades`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(actividad)
+                });
+                const data = await response.json();
+                document.getElementById('actividadesResponse').textContent = JSON.stringify(data, null, 2);
+                listarActividades();
+            } catch (error) {
+                document.getElementById('actividadesResponse').textContent = `Error: ${error.message}`;
+            }
+        }
+
+        async function realizarMantenimiento() {
+            try {
+                // Obtener ubicaciones que necesitan mantenimiento
+                const responseUbicaciones = await fetch(`${API_BASE_URL}/ubicaciones/mantenimiento`);
+                const ubicaciones = await responseUbicaciones.json();
+                
+                // Registrar mantenimiento para cada ubicación
+                for (const ubicacion of ubicaciones) {
+                    await fetch(`${API_BASE_URL}/ubicaciones/${ubicacion.id}/mantenimiento`, {
+                        method: 'POST'
+                    });
+                }
+                
+                document.getElementById('actividadesResponse').textContent = 
+                    `Mantenimiento realizado en ${ubicaciones.length} ubicaciones`;
+                listarActividades();
+            } catch (error) {
+                document.getElementById('actividadesResponse').textContent = `Error: ${error.message}`;
+            }
+        }
+
+        async function realizarReparacion() {
+            try {
+                // Obtener ubicaciones que necesitan limpieza
+                const responseUbicaciones = await fetch(`${API_BASE_URL}/ubicaciones/mantenimiento`);
+                const ubicaciones = await responseUbicaciones.json();
+                
+                // Registrar limpieza para cada ubicación
+                for (const ubicacion of ubicaciones) {
+                    await fetch(`${API_BASE_URL}/ubicaciones/${ubicacion.id}/limpiar`, {
+                        method: 'POST'
+                    });
+                }
+                
+                document.getElementById('actividadesResponse').textContent = 
+                    `Reparación y limpieza realizada en ${ubicaciones.length} ubicaciones`;
+                listarActividades();
+            } catch (error) {
+                document.getElementById('actividadesResponse').textContent = `Error: ${error.message}`;
+            }
+        }
+
+        async function listarActividades() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/actividades`);
+                const data = await response.json();
+                
+                // Create a table to display activities in a more user-friendly format
+                const actividadesResponseElement = document.getElementById('actividadesResponse');
+                
+                if (data.length === 0) {
+                    actividadesResponseElement.innerHTML = '<div class="alert alert-info">No hay actividades registradas</div>';
+                    return;
+                }
+                
+                // Create a table for a nice display
+                let tableHTML = `
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Tipo</th>
+                                    <th>Realizada por</th>
+                                    <th>Animales afectados</th>
+                                    <th>Items utilizados</th>
+                                    <th>Observaciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                // Format date function
+                const formatDate = (dateString) => {
+                    if (!dateString) return '-';
+                    const date = new Date(dateString);
+                    return date.toLocaleString();
+                };
+                
+                // Add rows for each activity
+                data.forEach(actividad => {
+                    // Format empleado
+                    const empleado = actividad.realizadaPor ? 
+                        `${actividad.realizadaPor.nombre} (${actividad.realizadaPor.rol})` : '-';
+                    
+                    // Format animales
+                    let animales = '-';
+                    if (actividad.afectaA && actividad.afectaA.length > 0) {
+                        animales = actividad.afectaA.map(animal => 
+                            `${animal.nombre} (${animal.especie})`
+                        ).join('<br>');
+                    }
+                    
+                    // Format items
+                    let items = '-';
+                    if (actividad.itemsUtilizados && actividad.itemsUtilizados.length > 0) {
+                        items = actividad.itemsUtilizados.map(item => 
+                            `${item.nombre} (${item.tipo})`
+                        ).join('<br>');
+                        if (actividad.cantidadUtilizada) {
+                            items += `<br><em>Cantidad: ${actividad.cantidadUtilizada}</em>`;
+                        }
+                    }
+                    
+                    // Get badge class based on activity type
+                    let badgeClass = 'bg-secondary';
+                    if (actividad.tipo.includes('LIMPIEZA')) {
+                        badgeClass = 'bg-info text-dark';
+                    } else if (actividad.tipo.includes('ALIMENTACION')) {
+                        badgeClass = 'bg-success';
+                    } else if (actividad.tipo.includes('TRATAMIENTO') || actividad.tipo.includes('REVISION')) {
+                        badgeClass = 'bg-warning text-dark';
+                    } else if (actividad.tipo.includes('VACUNACION')) {
+                        badgeClass = 'bg-danger';
+                    }
+                    
+                    tableHTML += `
+                        <tr>
+                            <td>${formatDate(actividad.fecha)}</td>
+                            <td><span class="badge ${badgeClass}">${actividad.descripcionTipo || actividad.tipo}</span></td>
+                            <td>${empleado}</td>
+                            <td>${animales}</td>
+                            <td>${items}</td>
+                            <td>${actividad.observaciones || '-'}</td>
+                        </tr>
+                    `;
+                });
+                
+                tableHTML += `
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                
+                // Replace JSON output with table
+                actividadesResponseElement.innerHTML = tableHTML;
+                
+                // Update the summary table
+                actualizarResumenActividades(data);
+                
+            } catch (error) {
+                document.getElementById('actividadesResponse').innerHTML = `
+                    <div class="alert alert-danger">
+                        <strong>Error:</strong> ${error.message}
+                    </div>`;
+            }
+        }
+        
+        function actualizarResumenActividades(actividades) {
+            // Agrupar actividades por tipo
+            const resumenPorTipo = {};
+            
+            actividades.forEach(actividad => {
+                // Extraer el tipo base (por ejemplo, LIMPIEZA_CORRAL -> LIMPIEZA)
+                let tipoBase = actividad.tipo;
+                if (tipoBase.includes('LIMPIEZA')) tipoBase = 'LIMPIEZA';
+                else if (tipoBase.includes('ALIMENTACION')) tipoBase = 'ALIMENTACION';
+                else if (tipoBase.includes('REVISION') || tipoBase.includes('TRATAMIENTO') || tipoBase.includes('VACUNACION')) tipoBase = 'SALUD';
+                else if (tipoBase.includes('TRASLADO')) tipoBase = 'TRASLADO';
+                else tipoBase = 'OTROS';
+                
+                if (!resumenPorTipo[tipoBase]) {
+                    resumenPorTipo[tipoBase] = {
+                        cantidad: 0,
+                        ultima: null,
+                        descripcion: getTipoDescription(tipoBase)
+                    };
+                }
+                
+                resumenPorTipo[tipoBase].cantidad++;
+                
+                // Actualizar la fecha más reciente
+                const fechaActividad = new Date(actividad.fecha);
+                if (!resumenPorTipo[tipoBase].ultima || fechaActividad > new Date(resumenPorTipo[tipoBase].ultima)) {
+                    resumenPorTipo[tipoBase].ultima = actividad.fecha;
+                }
+            });
+            
+            // Función para obtener descripción amigable del tipo
+            function getTipoDescription(tipo) {
+                switch (tipo) {
+                    case 'LIMPIEZA': return 'Limpieza';
+                    case 'ALIMENTACION': return 'Alimentación';
+                    case 'SALUD': return 'Salud y Veterinaria';
+                    case 'TRASLADO': return 'Traslados';
+                    default: return 'Otros';
+                }
+            }
+            
+            // Actualizar tabla de resumen
+            const tbody = document.getElementById('actividadesResumenBody');
+            tbody.innerHTML = '';
+            
+            if (Object.keys(resumenPorTipo).length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" class="text-center">No hay actividades registradas</td></tr>';
+                return;
+            }
+            
+            // Función para formatear fecha
+            const formatDate = (dateString) => {
+                if (!dateString) return '-';
+                const date = new Date(dateString);
+                return date.toLocaleString();
+            };
+            
+            // Obtener iconos para cada tipo de actividad
+            function getTipoIcon(tipo) {
+                switch (tipo) {
+                    case 'LIMPIEZA': return '<i class="fas fa-broom text-info"></i>';
+                    case 'ALIMENTACION': return '<i class="fas fa-utensils text-success"></i>';
+                    case 'SALUD': return '<i class="fas fa-heartbeat text-danger"></i>';
+                    case 'TRASLADO': return '<i class="fas fa-exchange-alt text-warning"></i>';
+                    default: return '<i class="fas fa-tasks"></i>';
+                }
+            }
+            
+            Object.entries(resumenPorTipo).forEach(([tipo, data]) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${getTipoIcon(tipo)} <strong>${data.descripcion}</strong></td>
+                    <td>${data.cantidad}</td>
+                    <td>${formatDate(data.ultima)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        async function filtrarActividades() {
+            const tipo = document.getElementById('tipoActividad').value;
+            
+            let url = `${API_BASE_URL}/actividades?`;
+            if (tipo) url += `tipo=${encodeURIComponent(tipo)}`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                // Use the same table format as listarActividades
+                const actividadesResponseElement = document.getElementById('actividadesResponse');
+                
+                if (data.length === 0) {
+                    actividadesResponseElement.innerHTML = `
+                        <div class="alert alert-info">
+                            No se encontraron actividades ${tipo ? `de tipo ${tipo}` : ''}
+                        </div>`;
+                    return;
+                }
+                
+                // Create a table for a nice display
+                let tableHTML = `
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Tipo</th>
+                                    <th>Realizada por</th>
+                                    <th>Animales afectados</th>
+                                    <th>Items utilizados</th>
+                                    <th>Observaciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                // Format date function
+                const formatDate = (dateString) => {
+                    if (!dateString) return '-';
+                    const date = new Date(dateString);
+                    return date.toLocaleString();
+                };
+                
+                // Add rows for each activity
+                data.forEach(actividad => {
+                    // Format empleado
+                    const empleado = actividad.realizadaPor ? 
+                        `${actividad.realizadaPor.nombre} (${actividad.realizadaPor.rol})` : '-';
+                    
+                    // Format animales
+                    let animales = '-';
+                    if (actividad.afectaA && actividad.afectaA.length > 0) {
+                        animales = actividad.afectaA.map(animal => 
+                            `${animal.nombre} (${animal.especie})`
+                        ).join('<br>');
+                    }
+                    
+                    // Format items
+                    let items = '-';
+                    if (actividad.itemsUtilizados && actividad.itemsUtilizados.length > 0) {
+                        items = actividad.itemsUtilizados.map(item => 
+                            `${item.nombre} (${item.tipo})`
+                        ).join('<br>');
+                        if (actividad.cantidadUtilizada) {
+                            items += `<br><em>Cantidad: ${actividad.cantidadUtilizada}</em>`;
+                        }
+                    }
+                    
+                    // Get badge class based on activity type
+                    let badgeClass = 'bg-secondary';
+                    if (actividad.tipo.includes('LIMPIEZA')) {
+                        badgeClass = 'bg-info text-dark';
+                    } else if (actividad.tipo.includes('ALIMENTACION')) {
+                        badgeClass = 'bg-success';
+                    } else if (actividad.tipo.includes('TRATAMIENTO') || actividad.tipo.includes('REVISION')) {
+                        badgeClass = 'bg-warning text-dark';
+                    } else if (actividad.tipo.includes('VACUNACION')) {
+                        badgeClass = 'bg-danger';
+                    }
+                    
+                    tableHTML += `
+                        <tr>
+                            <td>${formatDate(actividad.fecha)}</td>
+                            <td><span class="badge ${badgeClass}">${actividad.descripcionTipo || actividad.tipo}</span></td>
+                            <td>${empleado}</td>
+                            <td>${animales}</td>
+                            <td>${items}</td>
+                            <td>${actividad.observaciones || '-'}</td>
+                        </tr>
+                    `;
+                });
+                
+                tableHTML += `
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                
+                // Replace JSON output with table
+                actividadesResponseElement.innerHTML = tableHTML;
+            } catch (error) {
+                document.getElementById('actividadesResponse').innerHTML = `
+                    <div class="alert alert-danger">
+                        <strong>Error:</strong> ${error.message}
+                    </div>`;
+            }
+        }
+
+        // Funciones para Inventario
+        async function listarInventario() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/inventario`);
+                const data = await response.json();
+                
+                // Create a table to display inventory items in a more user-friendly format
+                const inventarioResponseElement = document.getElementById('inventarioResponse');
+                
+                if (data.length === 0) {
+                    inventarioResponseElement.innerHTML = '<div class="alert alert-info">No hay elementos en el inventario</div>';
+                    return;
+                }
+                
+                // Create a table for a nice display
+                let tableHTML = `
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                    <th>Cantidad</th>
+                                    <th>Mínimo</th>
+                                    <th>Estado</th>
+                                    <th>Descripción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                // Add rows for each item
+                data.forEach(item => {
+                    // Determine status based on whether reposition is needed
+                    const statusClass = item.necesitaReposicion ? 'bg-warning text-dark' : 'bg-success text-white';
+                    const statusText = item.necesitaReposicion ? 'Necesita reposición' : 'OK';
+                    
+                    tableHTML += `
+                        <tr>
+                            <td>${item.id}</td>
+                            <td>${item.nombre}</td>
+                            <td>${item.tipo}</td>
+                            <td>${item.cantidad}</td>
+                            <td>${item.cantidadMinima}</td>
+                            <td><span class="badge ${statusClass}">${statusText}</span></td>
+                            <td>${item.descripcion || '-'}</td>
+                        </tr>
+                    `;
+                });
+                
+                tableHTML += `
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                
+                // Replace JSON output with table
+                inventarioResponseElement.innerHTML = tableHTML;
+                
+                // Update the summary table
+                actualizarResumenInventario(data);
+            } catch (error) {
+                document.getElementById('inventarioResponse').innerHTML = `
+                    <div class="alert alert-danger">
+                        <strong>Error:</strong> ${error.message}
+                    </div>`;
+            }
+        }
+
+        async function filtrarInventario() {
+            const tipo = document.getElementById('tipoInventario').value;
+            
+            let url = `${API_BASE_URL}/inventario?`;
+            if (tipo) url += `tipo=${encodeURIComponent(tipo)}`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                // Use the same table format as listarInventario
+                const inventarioResponseElement = document.getElementById('inventarioResponse');
+                
+                if (data.length === 0) {
+                    inventarioResponseElement.innerHTML = `
+                        <div class="alert alert-info">
+                            No se encontraron elementos ${tipo ? `de tipo ${tipo}` : ''}
+                        </div>`;
+                    return;
+                }
+                
+                // Create a table for a nice display
+                let tableHTML = `
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                    <th>Cantidad</th>
+                                    <th>Mínimo</th>
+                                    <th>Estado</th>
+                                    <th>Descripción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                // Add rows for each item
+                data.forEach(item => {
+                    // Determine status based on whether reposition is needed
+                    const statusClass = item.necesitaReposicion ? 'bg-warning text-dark' : 'bg-success text-white';
+                    const statusText = item.necesitaReposicion ? 'Necesita reposición' : 'OK';
+                    
+                    tableHTML += `
+                        <tr>
+                            <td>${item.id}</td>
+                            <td>${item.nombre}</td>
+                            <td>${item.tipo}</td>
+                            <td>${item.cantidad}</td>
+                            <td>${item.cantidadMinima}</td>
+                            <td><span class="badge ${statusClass}">${statusText}</span></td>
+                            <td>${item.descripcion || '-'}</td>
+                        </tr>
+                    `;
+                });
+                
+                tableHTML += `
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                
+                // Replace JSON output with table
+                inventarioResponseElement.innerHTML = tableHTML;
+                
+                actualizarResumenInventario(data);
+            } catch (error) {
+                document.getElementById('inventarioResponse').innerHTML = `
+                    <div class="alert alert-danger">
+                        <strong>Error:</strong> ${error.message}
+                    </div>`;
+            }
+        }
+
+        function actualizarResumenInventario(inventario) {
+            // Agrupar inventario por tipo
+            const resumenPorTipo = {};
+            
+            inventario.forEach(item => {
+                if (!resumenPorTipo[item.tipo]) {
+                    resumenPorTipo[item.tipo] = {
+                        cantidad: 0,
+                        items: [],
+                        necesitaReposicion: false
+                    };
+                }
+                resumenPorTipo[item.tipo].cantidad += item.cantidad;
+                resumenPorTipo[item.tipo].items.push(item);
+                // Marcar tipo si alguno de sus items necesita reposición
+                if (item.necesitaReposicion) {
+                    resumenPorTipo[item.tipo].necesitaReposicion = true;
+                }
+            });
+            
+            // Actualizar tabla de resumen
+            const tbody = document.getElementById('inventarioResumenBody');
+            tbody.innerHTML = '';
+            
+            if (Object.keys(resumenPorTipo).length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center">No hay items en el inventario</td></tr>';
+                return;
+            }
+            
+            Object.entries(resumenPorTipo).forEach(([tipo, data]) => {
+                // Estilo dependiendo de si el tipo necesita reposición
+                const rowClass = data.necesitaReposicion ? 'table-warning' : '';
+                const statusIcon = data.necesitaReposicion ? 
+                    '<i class="fas fa-exclamation-triangle text-warning"></i>' : 
+                    '<i class="fas fa-check-circle text-success"></i>';
+                
+                // Lista más estilizada de items
+                const itemsList = data.items.map(item => {
+                    const itemStyle = item.necesitaReposicion ? 'text-danger fw-bold' : '';
+                    return `<span class="${itemStyle}">${item.nombre} (${item.cantidad})</span>`;
+                }).join(', ');
+                
+                const tr = document.createElement('tr');
+                tr.className = rowClass;
+                tr.innerHTML = `
+                    <td><strong>${tipo}</strong></td>
+                    <td>${data.cantidad}</td>
+                    <td>${statusIcon} ${data.necesitaReposicion ? 'Reposición necesaria' : 'Stock adecuado'}</td>
+                    <td>${itemsList}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        document.getElementById('crearInventarioForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const inventario = {
+                nombre: document.getElementById('nombreInventario').value,
+                tipo: document.getElementById('tipoNuevoInventario').value,
+                cantidad: parseInt(document.getElementById('cantidadInventario').value),
+                cantidadMinima: parseInt(document.getElementById('cantidadMinimaInventario').value),
+                descripcion: document.getElementById('descripcionInventario').value || ""
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/inventario`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(inventario)
+                });
+                const data = await response.json();
+                
+                // Show success message with the new item details
+                const inventarioResponseElement = document.getElementById('inventarioResponse');
+                inventarioResponseElement.innerHTML = `
+                    <div class="alert alert-success">
+                        <strong>¡Éxito!</strong> Item añadido correctamente
+                    </div>
+                    <div class="card">
+                        <div class="card-header bg-success text-white">
+                            <strong>${data.nombre}</strong> - Nuevo item añadido
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>ID:</strong> ${data.id}</li>
+                            <li class="list-group-item"><strong>Tipo:</strong> ${data.tipo}</li>
+                            <li class="list-group-item"><strong>Cantidad:</strong> ${data.cantidad}</li>
+                            <li class="list-group-item"><strong>Cantidad mínima:</strong> ${data.cantidadMinima}</li>
+                            <li class="list-group-item"><strong>Descripción:</strong> ${data.descripcion || '-'}</li>
+                        </ul>
+                    </div>
+                `;
+                
+                e.target.reset();
+                listarInventario();
+            } catch (error) {
+                document.getElementById('inventarioResponse').innerHTML = `
+                    <div class="alert alert-danger">
+                        <strong>Error:</strong> ${error.message}
+                    </div>
+                `;
+            }
+        });
+
+        document.getElementById('actualizarProductoForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('idProductoActualizar').value;
+            const producto = {};
+            
+            const nombre = document.getElementById('nombreProductoActualizar').value;
+            const cantidad = document.getElementById('cantidadProductoActualizar').value;
+            const precio = document.getElementById('precioProductoActualizar').value;
+            
+            if (nombre) producto.nombre = nombre;
+            if (cantidad) producto.cantidad = parseInt(cantidad);
+            if (precio) producto.precio = parseFloat(precio);
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/inventario/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(producto)
+                });
+                const data = await response.json();
+                
+                // Show success message with the updated item details
+                const inventarioResponseElement = document.getElementById('inventarioResponse');
+                inventarioResponseElement.innerHTML = `
+                    <div class="alert alert-info">
+                        <strong>¡Éxito!</strong> Item actualizado correctamente
+                    </div>
+                    <div class="card">
+                        <div class="card-header bg-info text-white">
+                            <strong>${data.nombre}</strong> - Item actualizado
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>ID:</strong> ${data.id}</li>
+                            <li class="list-group-item"><strong>Tipo:</strong> ${data.tipo}</li>
+                            <li class="list-group-item"><strong>Cantidad:</strong> ${data.cantidad}</li>
+                            <li class="list-group-item"><strong>Cantidad mínima:</strong> ${data.cantidadMinima}</li>
+                            <li class="list-group-item"><strong>Descripción:</strong> ${data.descripcion || '-'}</li>
+                        </ul>
+                    </div>
+                `;
+                
+                e.target.reset();
+                listarInventario();
+            } catch (error) {
+                document.getElementById('inventarioResponse').innerHTML = `
+                    <div class="alert alert-danger">
+                        <strong>Error:</strong> ${error.message}
+                    </div>
+                `;
+            }
+        });
+
+        document.getElementById('eliminarProductoForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('idProductoEliminar').value;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/inventario/${id}`, {
+                    method: 'DELETE'
+                });
+                if (response.ok) {
+                    document.getElementById('inventarioResponse').innerHTML = `
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle"></i> <strong>¡Éxito!</strong> El item con ID ${id} ha sido eliminado exitosamente.
+                        </div>
+                    `;
+                    e.target.reset();
+                    listarInventario();
+                } else {
+                    const error = await response.text();
+                    document.getElementById('inventarioResponse').innerHTML = `
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-circle"></i> <strong>Error:</strong> No se pudo eliminar el item.
+                            ${error ? `<br>Detalle: ${error}` : ''}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('inventarioResponse').innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i> <strong>Error:</strong> ${error.message}
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>
